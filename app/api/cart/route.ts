@@ -78,12 +78,19 @@ export async function POST(req: NextRequest) {
           quantity: findCartItem.quantity + 1,
         },
       });
+      const updatedUserCart = await updateCartTotalAmount(token);
+      const nextResponse = NextResponse.json(updatedUserCart);
+      nextResponse.cookies.set("cartToken", token);
+      return nextResponse;
     }
 
-    const updatedUserCart = await updateCartTotalAmount(token);
-    const nextResponse = NextResponse.json(updatedUserCart);
-    nextResponse.cookies.set("cartToken", token);
-    return nextResponse;
+    await prisma.cartItem.create({
+      data: {
+        cartId: userCart.id,
+        productItemId: data.productItemId,
+        quantity: 1,
+      },
+    });
   } catch (e) {
     console.error("CART_POST");
     return NextResponse.json({ message: "Не удалось создать корзину" });
