@@ -69,6 +69,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    console.log(findCartItem);
+
     if (findCartItem) {
       await prisma.cartItem.update({
         where: {
@@ -89,8 +91,15 @@ export async function POST(req: NextRequest) {
         cartId: userCart.id,
         productItemId: data.productItemId,
         quantity: 1,
+        ingredients: {
+          connect: data.ingredients?.map((id) => ({ id })),
+        },
       },
     });
+    const updatedUserCart = await updateCartTotalAmount(token);
+    const nextResponse = NextResponse.json(updatedUserCart);
+    nextResponse.cookies.set("cartToken", token);
+    return nextResponse;
   } catch (e) {
     console.error("CART_POST");
     return NextResponse.json({ message: "Не удалось создать корзину" });

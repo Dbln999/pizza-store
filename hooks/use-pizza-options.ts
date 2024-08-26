@@ -8,6 +8,7 @@ import { Variant } from "@/components/shared/group-variants";
 interface ReturnProps {
   size: PizzaSize;
   type: PizzaType;
+  currentItemId?: number;
   selectedIngredients: Set<number>;
   availableSizes: Variant[];
   setSize: (size: PizzaSize) => void;
@@ -23,6 +24,10 @@ export const usePizzaOptions = (items: ProductItem[]): ReturnProps => {
   );
 
   const availableSizes = getAvailablePizzaSizes(items, type);
+
+  const currentItemId = items.find(
+    (item) => item.pizzaType === type && item.size === size,
+  )?.id;
 
   useEffect(() => {
     const isAvailableSize = availableSizes.find(
@@ -41,5 +46,6 @@ export const usePizzaOptions = (items: ProductItem[]): ReturnProps => {
     setSize,
     setType,
     addIngredient,
+    currentItemId,
   };
 };
