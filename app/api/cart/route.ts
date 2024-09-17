@@ -65,11 +65,10 @@ export async function POST(req: NextRequest) {
               in: data.ingredients,
             },
           },
+          some: {},
         },
       },
     });
-
-    console.log(findCartItem);
 
     if (findCartItem) {
       await prisma.cartItem.update({

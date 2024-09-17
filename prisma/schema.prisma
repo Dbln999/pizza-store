@@ -96,7 +96,7 @@ model Cart {
   updatedAt DateTime @updatedAt
 }
 
-model CartItem {
+model CheckoutItem {
   id Int @id @default(autoincrement())
 
   cart   Cart @relation(fields: [cartId], references: [id])

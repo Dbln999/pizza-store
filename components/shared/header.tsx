@@ -1,18 +1,30 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { cn } from "@/lib/utils";
-import { CartButton, Container, SearchInput } from "@/components/shared";
+import {
+  AuthModal,
+  CartButton,
+  Container,
+  ProfileButton,
+  SearchInput,
+} from "@/components/shared";
 import Image from "next/image";
-import { Button } from "@/components/ui";
-import { User } from "lucide-react";
 import Link from "next/link";
 
 interface Props {
+  hasSearch?: boolean;
+  hasCart?: boolean;
   className?: string;
 }
 
-export const Header: React.FC<Props> = ({ className }) => {
+export const Header: React.FC<Props> = ({
+  hasSearch = true,
+  hasCart = true,
+  className,
+}) => {
+  const [openAuthModal, setOpenAuthModal] = useState(false);
   return (
-    <header className={cn("border border-b", className)}>
+    <header className={cn("border-b", className)}>
       <Container className="flex items-center justify-between py-8">
         {/* left side */}
         <Link href={"/"}>
@@ -27,20 +39,25 @@ export const Header: React.FC<Props> = ({ className }) => {
           </div>
         </Link>
 
-        <div className={"mx-10 flex-1"}>
-          <SearchInput />
-        </div>
+        {hasSearch && (
+          <div className={"mx-10 flex-1"}>
+            <SearchInput />
+          </div>
+        )}
 
         {/*{ Right side}*/}
         <div className="flex items-center gap-3">
-          <Button variant={"outline"} className={"flex items-center gap-1 "}>
-            <User size={16} />
-            Войти
-          </Button>
+          <AuthModal
+            open={openAuthModal}
+            onClose={() => setOpenAuthModal(false)}
+          />
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
 
-          <div>
-            <CartButton />
-          </div>
+          {hasCart && (
+            <div>
+              <CartButton />
+            </div>
+          )}
         </div>
       </Container>
     </header>
