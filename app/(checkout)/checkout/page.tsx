@@ -14,7 +14,9 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createOrder } from "@/app/actions";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { Api } from "@/services/api-client";
 
 const VAT = 15;
 const DELIVERY_COST = 300;
@@ -22,6 +24,7 @@ const DELIVERY_COST = 300;
 export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const { totalAmount, loading, loadingItemQuantity } = useCart();
+  const { data: session } = useSession();
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -34,6 +37,19 @@ export default function CheckoutPage() {
       comment: "",
     },
   });
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const data = await Api.auth.getMe();
+      const [firstName, lastName] = data.fullname.split(" ");
+      form.setValue("firstName", firstName);
+      form.setValue("lastName", lastName);
+      form.setValue("email", data.email);
+    }
+    if (session) {
+      fetchUserInfo();
+    }
+  }, [session]);
 
   const vatPrice = (totalAmount * VAT) / 100;
   const totalPrice = totalAmount + DELIVERY_COST + vatPrice;

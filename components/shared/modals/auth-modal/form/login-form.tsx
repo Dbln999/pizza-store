@@ -74,10 +74,10 @@ export const LoginForm: React.FC<Props> = ({ onClose, className }) => {
             height={60}
           />
         </div>
-        <FormInput name={"email"} type={"email"} label={"email"} required />
+        <FormInput name={"email"} type={"email"} label={"Email"} required />
         <FormInput
           name={"password"}
-          label={"email"}
+          label={"Пароль"}
           type={"password"}
           required
         />

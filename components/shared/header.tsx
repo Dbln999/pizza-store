@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
   AuthModal,
@@ -10,6 +10,8 @@ import {
 } from "@/components/shared";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface Props {
   hasSearch?: boolean;
@@ -22,6 +24,17 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
   className,
 }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  useEffect(() => {
+    if (searchParams.has("verified")) {
+      setTimeout(() => {
+        toast.success("Вы успешно зарегистрировались!");
+        router.replace("/");
+      }, 500);
+    }
+  }, []);
+
   const [openAuthModal, setOpenAuthModal] = useState(false);
   return (
     <header className={cn("border-b", className)}>
